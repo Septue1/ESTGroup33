@@ -4,7 +4,6 @@
 %% Load the supply and demand data
 
 timeUnit   = 's';
-
 supplyFile = "Team33_supply.csv";
 supplyUnit = "kW";
 
@@ -57,5 +56,4 @@ dt = Simulink.Parameter(deltat);
 eta_turbine    = 0.87;                          % Francis turbine efficiency
 eta_generator  = 0.97;                          % Generator efficiency
 eta_extr       = eta_turbine * eta_generator;   % Overall extraction efficiency
-aExtraction    = eta_extr;                   % Extraction loss coefficient (ex: 16% losses, 84% efficiency)
-
+aExtraction    = eta_extr;                      % Extraction loss coefficient (ex: 16% losses, 84% efficiency)
