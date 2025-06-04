@@ -37,7 +37,7 @@ eta_inj = eta_converter * eta_pump;   % Overall injection efficiency
 aInjection = eta_inj;
 
 % storage system
-EStorageMax     = 1e12;            % Maximum storage capacity [J]
+EStorageMax     = 2*10e8;            % Maximum storage capacity [J]
 EStorageMin     = EStorageMax/20;  % minimum energy = 5% of total cacpacity [J]
 EStorageInitial = EStorageMax/2;   % Initial energy stored [J] (50% full)
 bStorage        = 0;               % Storage dissipation coefficient [1/s]
