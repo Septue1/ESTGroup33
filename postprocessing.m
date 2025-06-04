@@ -18,7 +18,7 @@ PtoDemandTransportData = getData(PtoDemandTransport);
 PtoInjectionData = getData(PtoInjection);
 PfromExtractionData = getData(PfromExtraction);
 DStorageData = getData(DStorage);
-h_outData = getData(h_cur);
+h_outData = getData(h_energy);
 
 
 %% Supply and demand
