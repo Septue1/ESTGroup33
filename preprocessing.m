@@ -16,7 +16,7 @@ demandUnit = "kW";
 % load the demand data
 Demand = loadDemandData(demandFile, timeUnit, demandUnit);
 
-%% Simulation settings
+%% Simulation
 
 deltat = 5*unit("min");
 stopt  = min([Supply.Timeinfo.End, Demand.Timeinfo.End]);
