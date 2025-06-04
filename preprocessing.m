@@ -47,8 +47,8 @@ bStorage        = 0;               % Storage dissipation coefficient [1/s]
 rho = Simulink.Parameter(1000);
 g = Simulink.Parameter(9.81);
 Hturbine = Simulink.Parameter(10);
-r_sph = 6.2;
-N_sphere = 35;
+r_sph = 10;
+N_sphere = 9;
 dt = Simulink.Parameter(deltat);
 
 
