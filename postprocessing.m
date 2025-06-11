@@ -65,7 +65,7 @@ legend("Sell","Buy");
 
 %% Tank water height
 subplot(3,2,[5 6]);
-if exist('h_outData', 'var') && all(isfinite(h_outData)) && any(h_outData > 0)
+if exist('h_outData', 'var') && all(isfinite(h_outData)) && any(h_outData < 0)
     plot(tout/unit("day"), h_outData, 'b');
     xlim([0 tout(end)/unit("day")]);
     grid on;
