@@ -9,6 +9,7 @@ unit("min")  = 60*unit("s");
 unit("h")    = 60*unit("min");
 unit("day")  = 24*unit("h");
 unit("year") = 365*unit("day");
+unit("week") = 7*unit("day");
 
 % energy
 unit("J")  = 1.;

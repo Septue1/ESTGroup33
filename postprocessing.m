@@ -23,54 +23,54 @@ h_outData = getData(h_energy);
 
 %% Supply and demand
 subplot(3,2,1);
-plot(tout/unit("day"), PSupplyData/unit("kW"));
+plot(tout/unit("week"), PSupplyData/unit("kW"));
 hold on;
-plot(tout/unit("day"), PDemandData/unit("kW"));
-xlim([0 tout(end)/unit("day")]);
+plot(tout/unit("week"), PDemandData/unit("kW"));
+xlim([0 tout(end)/unit("week")]);
 grid on;
 title('Supply and demand');
-xlabel('Time [day]');
+xlabel('Time [week]');
 ylabel('Power [kW]');
 legend("Supply","Demand");
 
 %% Stored energy
 subplot(3,2,2);
-plot(tout/unit("day"), EStorageData/unit("J"));
-xlim([0 tout(end)/unit("day")]);
+plot(tout/unit("week"), EStorageData/unit("J"));
+xlim([0 tout(end)/unit("week")]);
 grid on;
 title('Storage');
-xlabel('Time [day]');
+xlabel('Time [week]');
 ylabel('Energy [J]');
 
 %% Energy losses
 subplot(3,2,3);
-plot(tout/unit("day"), DData/unit("W"));
-xlim([0 tout(end)/unit("day")]);
+plot(tout/unit("week"), DData/unit("W"));
+xlim([0 tout(end)/unit("week")]);
 grid on;
 title('Losses');
-xlabel('Time [day]');
+xlabel('Time [week]');
 ylabel('Dissipation rate [W]');
 
 %% Load balancing
 subplot(3,2,4);
-plot(tout/unit("day"), PSellData/unit("W"));
+plot(tout/unit("week"), PSellData/unit("W"));
 hold on;
-plot(tout/unit("day"), PBuyData/unit("W"));
-xlim([0 tout(end)/unit("day")]);
+plot(tout/unit("week"), PBuyData/unit("W"));
+xlim([0 tout(end)/unit("week")]);
 grid on;
 title('Load balancing');
-xlabel('Time [day]');
+xlabel('Time [week]');
 ylabel('Power [W]');
 legend("Sell","Buy");
 
 %% Tank water height
 subplot(3,2,[5 6]);
 if exist('h_outData', 'var') && all(isfinite(h_outData)) && any(h_outData < 0)
-    plot(tout/unit("day"), h_outData, 'b');
-    xlim([0 tout(end)/unit("day")]);
+    plot(tout/unit("week"), h_outData, 'b');
+    xlim([0 tout(end)/unit("week")]);
     grid on;
     title('Water Height in Tanks');
-    xlabel('Time [day]');
+    xlabel('Time [week]');
     ylabel('Height [m]');
 else
     warning("Tank water height (h_out) is missing or invalid. Skipping plot.");
