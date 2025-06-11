@@ -2,6 +2,9 @@
 % This script is invoked after the Simulink model is finished running (stopFcn callback function).
 
 close all;
+figure;
+
+% Helper function to extract .Data if timeseries, otherwise return input
 
 % Extract all relevant signals safely
 PSupplyData = getData(PSupply);
@@ -17,67 +20,64 @@ PfromExtractionData = getData(PfromExtraction);
 DStorageData = getData(DStorage);
 h_outData = getData(h_energy);
 
-%% Supply and Demand
-fig = figure;
+
+%% Supply and demand
+subplot(3,2,1);
 plot(tout/unit("week"), PSupplyData/unit("kW"));
 hold on;
 plot(tout/unit("week"), PDemandData/unit("kW"));
 xlim([0 tout(end)/unit("week")]);
 grid on;
-title('Supply and Demand');
+title('Supply and demand');
 xlabel('Time [week]');
 ylabel('Power [kW]');
 legend("Supply","Demand");
-saveas(fig, 'fig_supply_demand.png');
 
-%% Stored Energy
-fig = figure;
+%% Stored energy
+subplot(3,2,2);
 plot(tout/unit("week"), EStorageData/unit("J"));
 xlim([0 tout(end)/unit("week")]);
 grid on;
-title('Stored Energy');
+title('Storage');
 xlabel('Time [week]');
 ylabel('Energy [J]');
-saveas(fig, 'fig_stored_energy.png');
 
-%% Energy Losses
-fig = figure;
+%% Energy losses
+subplot(3,2,3);
 plot(tout/unit("week"), DData/unit("W"));
 xlim([0 tout(end)/unit("week")]);
 grid on;
-title('Energy Losses');
+title('Losses');
 xlabel('Time [week]');
-ylabel('Dissipation Rate [W]');
-saveas(fig, 'fig_energy_losses.png');
+ylabel('Dissipation rate [W]');
 
-%% Load Balancing
-fig = figure;
+%% Load balancing
+subplot(3,2,4);
 plot(tout/unit("week"), PSellData/unit("W"));
 hold on;
 plot(tout/unit("week"), PBuyData/unit("W"));
 xlim([0 tout(end)/unit("week")]);
 grid on;
-title('Load Balancing');
+title('Load balancing');
 xlabel('Time [week]');
 ylabel('Power [W]');
 legend("Sell","Buy");
-saveas(fig, 'fig_load_balancing.png');
 
-%% Tank Water Height
-if exist('h_outData', 'var') && all(isfinite(h_outData)) && any(h_outData <= 0)
-    fig = figure;
+%% Tank water height
+subplot(3,2,[5 6]);
+if exist('h_outData', 'var') && all(isfinite(h_outData)) && any(h_outData < 0)
     plot(tout/unit("week"), h_outData, 'b');
     xlim([0 tout(end)/unit("week")]);
     grid on;
     title('Water Height in Tanks');
     xlabel('Time [week]');
     ylabel('Height [m]');
-    saveas(fig, 'fig_water_height.png');
 else
     warning("Tank water height (h_out) is missing or invalid. Skipping plot.");
 end
 
-%% Pie Charts
+%% Pie charts
+% integrate the power signals in time
 EfromSupplyTransport = trapz(tout, PfromSupplyTransportData);
 EtoDemandTransport   = trapz(tout, PtoDemandTransportData);
 ESell                = trapz(tout, PSellData);
@@ -86,26 +86,31 @@ EtoInjection         = trapz(tout, PtoInjectionData);
 EfromExtraction      = trapz(tout, PfromExtractionData);
 EStorageDissipation  = trapz(tout, DStorageData);
 EDirect              = EfromSupplyTransport - ESell - EtoInjection;
+ESurplus             = EtoInjection - EfromExtraction - EStorageDissipation;
+
+% Protect against NaNs, Infs, or divide-by-zero
+figure;
+tiles = tiledlayout(1,2);
 
 leftData = [EDirect, EtoInjection, ESell];
 rightData = [EDirect, EfromExtraction, EBuy];
 
 if all(isfinite(leftData)) && sum(leftData) > 0
-    fig = figure;
-    pie(leftData/sum(leftData));
-    legend({"Direct to demand", "To storage", "Sold"}, 'Location', 'southoutside');
-    title(sprintf("Received energy: %3.2e [J]", EfromSupplyTransport/unit('J')));
-    saveas(fig, 'fig_received_energy_pie.png');
+    ax = nexttile;
+    pie(ax, leftData/sum(leftData));
+    lgd = legend({"Direct to demand", "To storage", "Sold"});
+    lgd.Layout.Tile = "south";
+    title(sprintf("Received energy %3.2e [J]", EfromSupplyTransport/unit('J')));
 else
     warning("Invalid data in received energy pie chart — skipping.");
 end
 
 if all(isfinite(rightData)) && sum(rightData) > 0
-    fig = figure;
-    pie(rightData/sum(rightData));
-    legend({"Direct from supply", "From storage", "Bought"}, 'Location', 'southoutside');
-    title(sprintf("Delivered energy: %3.2e [J]", EtoDemandTransport/unit('J')));
-    saveas(fig, 'fig_delivered_energy_pie.png');
+    ax = nexttile;
+    pie(ax, rightData/sum(rightData));
+    lgd = legend({"Direct from supply", "From storage", "Bought"});
+    lgd.Layout.Tile = "south";
+    title(sprintf("Delivered energy %3.2e [J]", EtoDemandTransport/unit('J')));
 else
     warning("Invalid data in delivered energy pie chart — skipping.");
 end
@@ -120,3 +125,4 @@ function out = getData(x)
         out = x;
     end
 end
+
